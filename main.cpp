@@ -19,26 +19,18 @@ int main() {
 
     Texture2D nebula{LoadTexture("/home/ashfaque/CLionProjects/C++/GameProgramming/DapperDasher/textures/12_nebula_spritesheet.png")};
 
-    Rectangle nebula_rectangle;
-    nebula_rectangle.width=;
-    nebula_rectangle.height=;
-    nebula_rectangle.x=;
-    nebula_rectangle.y=;
+    Rectangle nebula_rectangle{0.0,0.0,float (nebula.width/8),float(nebula.height/8)};
 
+    Vector2 nebula_position{WINDOW_WIDTH,WINDOW_HEIGHT-nebula_rectangle.height};
 
+    int nebula_velocity{-600}; // nebula x velocity in -x direction ; pixels per sec
 
     // Scarfy Variables
     Texture2D scarfy{LoadTexture("/home/ashfaque/CLionProjects/C++/GameProgramming/DapperDasher/textures/scarfy.png")};
 
-    Rectangle scarfy_rectangle;
-    scarfy_rectangle.width=scarfy.width/6;
-    scarfy_rectangle.height=scarfy.height;
-    scarfy_rectangle.x=0;
-    scarfy_rectangle.y=0;
+    Rectangle scarfy_rectangle{0.0,0.0,float(scarfy.width/6),float(scarfy.height)};
 
-    Vector2 scarfy_position;
-    scarfy_position.x=WINDOW_WIDTH/2-scarfy_rectangle.width/2;
-    scarfy_position.y=WINDOW_HEIGHT-scarfy_rectangle.height;
+    Vector2 scarfy_position{WINDOW_WIDTH/2-scarfy_rectangle.width/2,WINDOW_HEIGHT-scarfy_rectangle.height};
 
     int frame{}; // animation frame
 
@@ -70,21 +62,32 @@ int main() {
             velocity+=jump_velocity;
         }
 
+        // update Nebula position
+
+        nebula_position.x+=nebula_velocity*delta_time;
+
+        // update Scarfy position
         scarfy_position.y+=velocity*delta_time;
 
-        //update running time
 
-        running_time+=delta_time;
+        if(!is_in_air){
+            //update running time
+            running_time+=delta_time;
+            if(running_time>=update_time) {
+                running_time=0;
+                //update animation frame
+                scarfy_rectangle.x=frame*scarfy_rectangle.width;
+                frame++;
+                if(frame> number_of_scarfy_sprite_images-1) frame=0;
+            }
 
-        if(running_time>=update_time) {
-            running_time=0;
-            //update animation frame
-            scarfy_rectangle.x=frame*scarfy_rectangle.width;
-            frame++;
-
-            if(frame> number_of_scarfy_sprite_images-1) frame=0;
         }
 
+        // Draw Nebula
+
+        DrawTextureRec(nebula,nebula_rectangle,nebula_position,WHITE);
+
+        // Draw Scarfy
         DrawTextureRec(scarfy,scarfy_rectangle,scarfy_position,WHITE);
 
 
