@@ -15,6 +15,19 @@ int main() {
     bool is_in_air{false};
     const int jump_velocity{-600}; // pixels per sec
 
+    // Nebula Variables
+
+    Texture2D nebula{LoadTexture("/home/ashfaque/CLionProjects/C++/GameProgramming/DapperDasher/textures/12_nebula_spritesheet.png")};
+
+    Rectangle nebula_rectangle;
+    nebula_rectangle.width=;
+    nebula_rectangle.height=;
+    nebula_rectangle.x=;
+    nebula_rectangle.y=;
+
+
+
+    // Scarfy Variables
     Texture2D scarfy{LoadTexture("/home/ashfaque/CLionProjects/C++/GameProgramming/DapperDasher/textures/scarfy.png")};
 
     Rectangle scarfy_rectangle;
@@ -26,6 +39,12 @@ int main() {
     Vector2 scarfy_position;
     scarfy_position.x=WINDOW_WIDTH/2-scarfy_rectangle.width/2;
     scarfy_position.y=WINDOW_HEIGHT-scarfy_rectangle.height;
+
+    int frame{}; // animation frame
+
+    const int number_of_scarfy_sprite_images{6};
+    const float update_time{1.0/(number_of_scarfy_sprite_images*2)};
+    float running_time{};
 
     SetTargetFPS(TARGET_FPS); // Doesn't guarantee this value, depends on CPU
     // Delta time -> time since last frame
@@ -53,7 +72,19 @@ int main() {
 
         scarfy_position.y+=velocity*delta_time;
 
-        //DrawRectangle(WINDOW_WIDTH/2,pos_y,rectangle_width,rectangle_height, BLUE);
+        //update running time
+
+        running_time+=delta_time;
+
+        if(running_time>=update_time) {
+            running_time=0;
+            //update animation frame
+            scarfy_rectangle.x=frame*scarfy_rectangle.width;
+            frame++;
+
+            if(frame> number_of_scarfy_sprite_images-1) frame=0;
+        }
+
         DrawTextureRec(scarfy,scarfy_rectangle,scarfy_position,WHITE);
 
 
@@ -62,6 +93,7 @@ int main() {
     }
 
     UnloadTexture(scarfy);
+    UnloadTexture(nebula);
     CloseWindow();
 
     return 0;
